@@ -5,6 +5,7 @@ from fastapi import APIRouter
 
 from app.programs.dao import ProgramsDAO, HistoryDAO
 from app.programs.manager import ProgramManager
+from app.programs.schema import SProgram, SHistory, SKnownProgram
 
 router = APIRouter(prefix="/programs", tags=["programs"])
 
@@ -25,8 +26,14 @@ info = dict
 
 
 @router.get("/get_all")
-async def get_all_programs() -> dict[pid, info]:
-    return ProgramManager.get_all_processes()
+async def get_running_programs() -> list[SProgram]:
+    return ProgramManager.get_all_user_processes()
+
+
+@router.get("/get_all_known")
+async def get_known_programs() -> list[SKnownProgram]:
+    """Содержит программы с известными путями к .exe файлам"""
+    return await ProgramsDAO.find_all_programs()
 
 
 @router.post("/stop")
@@ -36,9 +43,7 @@ async def stop_program(program_id: int) -> str:
     except psutil.NoSuchProcess as e:
         return f"Нет процесса с таким pid={e.pid}"
     await HistoryDAO.add_history_record(name, "stop_program")
-    await ProgramsDAO.update_program_status(
-        name=name, path=name, new_status=False
-    )
+    await ProgramsDAO.update_program_status(name=name, path=name, new_status=False)
     return f"Завершенные процессы: {len(gone)}, Живые процессы: {len(alive)}"
 
 
@@ -46,3 +51,8 @@ async def stop_program(program_id: int) -> str:
 async def stop_all_programs() -> str:
     user = ProgramManager.stop_all_user_process()
     return f"Все программы пользователя {user} остановлены"
+
+
+@router.get("/history")
+async def get_history() -> list[SHistory]:
+    return await HistoryDAO.find_all_history()

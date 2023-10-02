@@ -20,6 +20,10 @@ class ProgramsDAO(BaseDAO):
     async def add_program(cls, name, path, status):
         await cls.add(name=name, path=path, status=status)
 
+    @classmethod
+    async def find_all_programs(cls):
+        return await cls.find_all()
+
 
 class HistoryDAO(BaseDAO):
     model = History
