@@ -10,12 +10,14 @@ packages = [{include = "apps_manipulating"}]
 python = "^3.11"
 fastapi = "^0.103.1"
 asyncpg = "^0.28.0"
-python-socketio = "^5.9.0"
 sqlalchemy = "^2.0.21"
 psutil = "^5.9.5"
 uvicorn = "^0.23.2"
 pydantic = "^2.4.2"
 pydantic-settings = "^2.0.3"
+websockets = "^11.0.3"
+nuitka = "^1.8.3"
+alembic = "^1.12.0"
 
 
 [tool.poetry.group.dev.dependencies]

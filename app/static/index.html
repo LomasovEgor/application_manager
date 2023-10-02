@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Alert Page</title>
+</head>
+<body>
+<h1>Alert Page</h1>
+<script>
+    let ws = new WebSocket("ws://localhost:8000/ws");
+    ws.onmessage = function (event) {
+        console.log(event.data)
+        alert(event.data)
+    };
+</script>
+</body>
+</html>
