@@ -24,4 +24,3 @@ class SKnownProgram(BaseModel):
     id: int
     name: str
     path: str
-    status: bool

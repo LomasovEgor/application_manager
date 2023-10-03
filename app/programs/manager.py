@@ -10,12 +10,12 @@ from app.programs.schema import SProgram
 
 class ProgramManager:
     @classmethod
-    def run_process(cls, program_path: str):
+    def run_process(cls, program_path: str) -> int:
         process = subprocess.Popen(Path(program_path))
         return process.pid
 
     @classmethod
-    def get_all_user_processes(cls):
+    def get_all_user_processes(cls) -> list[SProgram]:
         current_user = os.getlogin()
         user_processes = []
         for process in psutil.process_iter(["pid", "name", "username"]):
@@ -41,7 +41,7 @@ class ProgramManager:
         include_parent=True,
         timeout=None,
         on_terminate=None,
-    ):
+    ) -> tuple[list[psutil.Process], list[psutil.Process], str]:
         assert pid != os.getpid()
         parent = psutil.Process(pid)
         name = parent.name()
@@ -59,18 +59,19 @@ class ProgramManager:
         return gone, alive, name
 
     @classmethod
-    def stop_all_user_process(cls):
+    def stop_all_user_process(cls) -> tuple[int, int, list[str], str]:
         all_gone = 0
         all_alive = 0
         names = []
         current_user = os.getlogin()
         for process in cls.get_all_user_processes():
-            gone, alive, name = cls.kill_proc_tree(process.pid)
-            all_gone += gone
-            all_alive += alive
-            names.append(name)
+            try:
+                gone, alive, name = cls.kill_proc_tree(process.pid)
+                all_gone += len(gone)
+                all_alive += len(alive)
+                names.append(name)
+            except psutil.NoSuchProcess:
+                pass
+            except psutil.AccessDenied:
+                pass
         return all_gone, all_alive, names, current_user
-
-
-if __name__ == "__main__":
-    print(ProgramManager.get_all_user_processes())
