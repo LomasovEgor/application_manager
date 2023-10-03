@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from app.programs.router import router as program_router
 from app.sockets.router import router as socket_router
+from config import settings
 
 app = FastAPI()
 
@@ -16,7 +17,7 @@ if __name__ == "__main__":
     alembic_cfg.set_main_option("script_location", "migrations")
     alembic_cfg.set_main_option(
         "sqlalchemy.url",
-        "postgresql+asyncpg://postgres:postgres@localhost:5432/programs?async_fallback=True",
+        f"{settings.DATABASE_URL}?async_fallback=True",
     )
 
     try:

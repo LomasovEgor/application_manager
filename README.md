@@ -1,11 +1,11 @@
 Запуск:
-Приложение будет ожидать локально развернутую бд postgres с параметрами:
-USER: postgres
-PASS: postgres
-HOST: localhost
-PORT: 5432
-DB_NAME: programs
-(postgresql+asyncpg://postgres:postgres@localhost:5432/programs)
+Приложение будет ожидать бд postgres. Параметры подключения берутся из переменных окружения.<br>
+Параметры: 
+- DB_HOST
+- DB_PORT
+- DB_NAME
+- DB_USER
+- DB_PASS<br>
 Сборка:
 `python -m nuitka --follow-imports --onefile main.py`
 
